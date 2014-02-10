@@ -1,0 +1,7 @@
+# Have the program play against itself.  Make sure somebody wins.
+java loa.Main --ai=2 --seed=12347 --time=1
+None
+===#1===
+p
+%bw
+%e

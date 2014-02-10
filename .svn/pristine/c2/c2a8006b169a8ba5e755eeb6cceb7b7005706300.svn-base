@@ -1,0 +1,76 @@
+package loa;
+
+import java.util.Scanner;
+import java.util.regex.MatchResult;
+
+/** A Player that prompts for moves and reads them from its Game.
+ *  @author Daniel Paden Tomasello cs61b-bz*/
+class HumanPlayer extends Player {
+    /** Boolean. True if display option is on. */
+    private boolean displayOn;
+    /** Messaging system. */
+    private QueuedMailBox box;
+
+    /** A HumanPlayer that plays the SIDE pieces in GAME.  It uses
+     *  GAME.getMove() as a source of moves.  DISPLAYON0 for display and
+     *  BOX0 is messager. */
+    HumanPlayer(Side side, Game game, boolean displayOn0, QueuedMailBox box0) {
+        super(side, game);
+        displayOn = displayOn0;
+        box = box0;
+    }
+
+    @Override
+    Move makeMove() throws InterruptedException {
+        if (!displayOn) {
+            Scanner inp = new Scanner(System.in);
+            String comm;
+            int col0, col1, row0, row1;
+            while (true) {
+                System.out.print("Player " + side()
+                        + " please make a move >  ");
+                System.out.flush();
+                while (!inp.hasNext()) {
+                    continue;
+                }
+                inp.findWithinHorizon("\\s*([qps#]|\\z)?"
+                        + "([a-h][1-8]-[a-h][1-8])?", 0);
+                MatchResult match = inp.match();
+                String first = match.group(1);
+                if (first != null) {
+                    if (match.group(1).equals("s")) {
+                        System.out.println(getGame().getBoard().toString());
+                    } else if (match.group(1).equals("q")
+                            | match.group(1).equals("\\z")) {
+                        System.exit(0);
+                    } else if (match.group(1).equals("p")) {
+                        MachinePlayer.startAi();
+                    }
+                    inp.nextLine();
+                    continue;
+                } else if (match.group(2) != null) {
+                    comm = match.group(2);
+                    col0 = Board.col(comm.substring(0, 2));
+                    row0 = Board.row(comm.substring(0, 2));
+                    col1 = Board.col(comm.substring(3, 5));
+                    row1 = Board.row(comm.substring(3, 5));
+                    Move move = Move.create(col0, row0, col1, row1);
+                    if (getGame().getBoard().isLegal(move)) {
+                        return move;
+                    } else {
+                        System.out.println("Illegal Move");
+                        continue;
+                    }
+                } else {
+                    System.out.println("Incorrect input, please try again.");
+                }
+                inp.nextLine();
+            }
+        } else {
+            Move move = box.receive();
+            System.out.println(move);
+            return move;
+        }
+
+    }
+}

@@ -1,0 +1,143 @@
+// Remove all comments that begin with //, and replace appropriately.
+// Feel free to modify ANYTHING in this file.
+
+package loa;
+
+import java.util.Random;
+import java.util.Scanner;
+import java.util.regex.MatchResult;
+
+import ucb.util.Stopwatch;
+
+/** Represents one game of Lines of Action.
+ *  @author */
+class Game {
+
+    /** A new Game between NUMHUMAN humans and 2-NUMHUMAN AIs.  SIDE0
+     *  indicates which side the first player (known as ``you'') is
+     *  playing.  SEED is a random seed for random-number generation.
+     *  TIME is the time limit each side has to make its moves (in seconds).
+     */
+    Game(int _numHuman, Side _side0, long _seed, int _time) {
+        _randomSource = new Random(seed);
+        Player player1, player2;
+        if (_numHuman == 2) {
+            player1 = new HumanPlayer(side, this);
+            player2 = new HumanPlayer(side.opponent(), this);
+        } else if (_numHuman == 1) {
+            player1 = new HumanPlayer(side, this);
+            player2 = new MachinePlayer(side.opponent(), this);
+        } else {
+            player1 = new MachinePlayer(side, this);
+            player2 = new MachinePlayer(side.opponent(), this);
+        }
+        if (_side0 == Side.WHITE) {
+            whitePlayer = player1;
+            blackPlayer = player2;
+        } else {
+            whitePlayer = player2;
+            blackPlayer = player1;
+        }
+        side = _side0;
+        _board = new MutableBoard(Board.INITIAL_PIECES, _side0);
+        _randomSource = new Random(_seed);
+        time = _time;
+    }
+
+    /** Return the current board. */
+    Board getBoard() {
+        return _board;
+    }
+
+    /** Return a move from the terminal.  Processes any intervening commands
+     *  as well. */
+    String getMove() {
+        return "";  // REPLACE WITH IMPLEMENTATION
+    }
+
+    /** Play this game, printing any transcript and other results. */
+    public void play() {
+        if (Reporter.getMessageLevel() != 0) {
+            System.out.println("Number of Humans: " + numHuman);
+            System.out.println("Side of first player: " + side);
+            System.out.println("Random Seed: " + seed);
+            System.out.println("Maximun time limit: " + time);
+        }
+
+        Scanner inp = new Scanner(System.in);
+        blackWatch = new Stopwatch();
+        whiteWatch = new Stopwatch();
+        while (!_board.gameOver()) {
+            blackWatch.start();
+            blackPlayer.makeMove();
+            blackWatch.stop();
+            parseCommand(blackPlayer, inp.next());
+        }
+    }
+
+    /** Parses command from Player */
+    void makeMove(Player player, Scanner inp) {
+        String comm;
+        while(true) {
+            while(!inp.hasNext()) {
+                continue;
+            }
+            inp.findWithinHorizon("\\s*(s)?\\s*(#)?\\s*(p)?\\s*([a-h][1-8]-[a-h][1-8])?", 0);
+            MatchResult match = inp.match();
+            if (match.group(1) != null) {
+                _board.toString();
+                inp.nextLine();
+                continue;
+            } else if (match.group(2) != null) {
+                inp.nextLine();
+                continue;
+            } else if (comm.equals("p")) {
+                // Start Ai
+            } else if (comm.matches("[a-h][1-8]-[a-h][1-8]"))
+                int col0 = String.parseInt(comm.substring(0, 1));
+                Move move = Move.create(column0, row0, column1, row1)
+        }
+    }
+
+
+    /** Return time remaining for SIDE (in seconds). */
+    int timeRemaining(Side side) {
+        return 0; // REPLACE WITH IMPLEMENTATION
+    }
+
+    /** Return the random number generator for this game. */
+    Random getRandomSource() {
+        return _randomSource;
+    }
+
+    /** Prints board */
+    public void printBoard() {
+        _board.toString();
+    }
+
+    /** The official game board. */
+    private MutableBoard _board;
+
+    /** A source of random numbers, primed to deliver the same sequence in
+     *  any Game with the same seed value. */
+    private Random _randomSource;
+
+    // OTHER STUFF HERE
+
+    /** numHuman is number of human players. Time is time limit */
+    private int numHuman, time;
+    /** Random generator seed */
+    private long seed;
+    /** Side of first player */
+    private Side side;
+
+    /**Players of the game */
+    Player blackPlayer, whitePlayer;
+
+    /** Stopwatch for player1 and 2 respectively */
+    Stopwatch blackWatch, whiteWatch;
+
+    /** MAGIC number for 1000. */
+    static final double THOUSAND = 1000;
+
+}

@@ -1,0 +1,386 @@
+// Remove all comments that begin with //, and replace appropriately.
+// Feel free to modify ANYTHING in this file.
+
+package loa;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+
+import static loa.Piece.*;
+import static loa.Side.*;
+
+/** Represents the state of a game of Lines of Action. A Board is immutable.
+ *  Its MutableBoard subclass allows moves to be made.
+ *  @author
+ */
+class Board {
+
+
+
+    /** A Board whose initial contents are taken from
+     *  INITIALCONTENTS and in which it is PLAYER's move. The resulting
+     *  Board has
+     *        get(col, row) == INITIALCONTENTS[row-1][col-1]
+     *  Assumes that PLAYER is not null and INITIALCONTENTS is 8x8.
+     */
+    Board(Piece[][] initialContents, Side player) {
+        assert player != null && initialContents.length == 8;
+        for (int i = 1; i < 9; i += 1) {
+            for (int j = 1; j < 9; j += 1) {
+                boardspots[i][j] = new BoardSpot(i, j);
+                boardspots[i][j].addPiece(initialContents[j-1][i-1]);
+            }
+        }
+        BoardSpot spot;
+        for (int k = 1; k < 9; k += 1) {
+            for (int l = 1; l < 9; l += 1) {
+                spot = boardspots[k][l];
+                spot.setTL(boardspots[k-1][l+1]);
+                spot.setT(boardspots[k][l+1]);
+                spot.setTR(boardspots[k+1][l+1]);
+                spot.setR(boardspots[k+1][l]);
+                spot.setBR(boardspots[k+1][l-1]);
+                spot.setB(boardspots[k][l-1]);
+                spot.setBL(boardspots[k-1][l-1]);
+                spot.setL(boardspots[k-1][l]);
+            }
+        }
+        setSide(player);
+    }
+
+
+    /** A new board in the standard initial position. */
+    Board() {
+        this(INITIAL_PIECES, BLACK);
+    }
+
+    /** A Board whose initial contents and state are copied from
+     *  BOARD. */
+    Board(Board board) {
+        this(board.setup, BLACK);
+    }
+
+    /** Return the contents of column C, row R, where 1 <= C,R <= 8,
+     *  where column 1 corresponds to column 'a' in the standard
+     *  notation. */
+    Piece get(int c, int r) {
+        assert 1 <= c && c <= 8 && 1 <= r && r <= 8;
+        return boardspots[c][r].getPiece();
+    }
+    
+    BoardSpot getSpot(int c, int r) {
+        assert 1 <= c && c <= 8 && 1 <= r && r <= 8;
+        return boardspots[c][r];
+    }
+    
+
+    /** Return the contents of the square SQ.  SQ must be the
+     *  standard printed designation of a square (having the form cr,
+     *  where c is a letter from a-h and r is a digit from 1-8). */
+    Piece get(String sq) {
+        return get(col(sq), row(sq));
+    }
+
+    /** Return the column number (a value in the range 1-8) for SQ.
+     *  SQ is as for {@link get(String)}. */
+    static int col(String sq) {
+        return Character.getNumericValue(sq.charAt(0)) - 9;
+    }
+
+    /** Return the row number (a value in the range 1-8) for SQ.
+     *  SQ is as for {@link get(String)}. */
+    static int row(String sq) {
+        return Integer.parseInt(sq.substring(1));
+    }
+
+    /** Return the Side that is currently next to move. */
+    Side turn() {
+        return getSide();
+    }
+
+
+
+    /** Return true iff MOVE is legal for the player currently on move. */
+    boolean isLegal(Move move) {
+        if (piecesOnLine(move) != move.length()) {
+            return false;
+        }
+        if (get(move.getCol0(), move.getRow0()).side() == null) {
+            return false;
+        }
+        if (!get(move.getCol0(), move.getRow0()).side().equals(turn())) {
+            return false;
+        }
+        if (get(move.getCol1(), move.getRow1()).equals(get(move.getCol0(), move.getRow0()))){
+            return false;
+        }
+        Piece piece = get(move.getCol0(), move.getRow0());
+        Side pieceSide = piece.side();
+        int col0, col1, row0, row1;
+        col0 = move.getCol0();
+        col1 = move.getCol1();
+        row0 = move.getRow0();
+        row1 = move.getRow1();
+        if (boardspots[col1][row1].getPiece().side() ==  pieceSide) {
+            return false; 
+        } 
+        if (col0 == col1 && row0 == row1) {
+            return false;
+        }
+        col0 += Math.signum(col1 - col0);
+        row0 += Math.signum(row1 - row0);
+        while (col0 != col1 | row0 != row1) {
+            if (boardspots[col0][row0].getPiece().side() ==  pieceSide.opponent()) {
+                return false;
+            }
+            col0 += Math.signum(col1 - col0);
+            row0 += Math.signum(row1 - row0);
+        }
+        return true;
+    }
+
+
+
+    /** Returns number of pieces along line of move */ 
+    int piecesOnLine(Move move) {
+        int col0, col1, row0, row1;
+        col0 = move.getCol0();
+        col1 = move.getCol1();
+        row0 = move.getRow0();
+        row1 = move.getRow1();
+        double colincr = Math.signum(col1 - col0);
+        double rowincr = Math.signum(row1 - row0);
+        while ((col0 > 1 & col0 < 8 | colincr == 0) & ((row0 > 1 & row0 < 8) | rowincr == 0)) {
+            col0 -= colincr;
+            row0 -= rowincr;
+        }
+        int numPieces = 0;
+        while (col0 >= 1 && row0 >= 1 && col0 < 9 && row0 < 9) {
+            if (get(col0, row0) != Piece.EMP) {
+                numPieces += 1;
+            }
+            col0 += colincr;
+            row0 += rowincr;
+        }        
+        return numPieces;
+    }
+
+    /** Returns number of pieces along line of move */ 
+    int piecesOnLine(BoardSpot spot, int x, int y) {
+        int col0, col1, row0, row1;
+        col0 = spot.get_col();
+        col1 = col0 + x;
+        row0 = spot.get_row();
+        row1 = row0 + y;
+        if (!(col1 >= 1 & col1 <= 8 & row1 >= 1 & row1 <= 8)) {
+            col1 = col0 - x;
+            row1 = row0 -y;
+        }
+        double colincr = Math.signum(col1 - col0);
+        double rowincr = Math.signum(row1 - row0);
+        while (((colincr == 0) |col0 > 1 & col0 < 8) & ((rowincr == 0) | (row0 > 1 & row0 < 8))) {
+            col0 -= colincr;
+            row0 -= rowincr;
+        }
+        int numPieces = 0;
+        while (col0 >= 1 && row0 >= 1 && col0 < 9 && row0 < 9) {
+            if (get(col0, row0) != Piece.EMP) {
+                numPieces += 1;
+            }
+            col0 += colincr;
+            row0 += rowincr;
+        }        
+        return numPieces;
+    }
+
+
+    /** Return a sequence of all legal from this position. */
+    Iterator<Move> legalMoves() {
+        LinkedList<Move> moves = new LinkedList<Move>();
+        for (int c = 1; c < 9; c += 1) {
+            for (int r = 1; r < 9; r += 1) {
+                if (get(c,r).side() == turn()) {
+                moves.addAll(legalMovesFromSpot(getSpot(c, r)));
+                }
+            }
+        }
+        return moves.iterator();
+
+    }
+
+    Move legalMovefromSpotInDirection(BoardSpot spot, int x, int y) {
+        if (y == 0 & x == 0) {
+            return null;
+        }
+        int col = spot.get_col();
+        int row = spot.get_row();
+        int piecesOnLine = piecesOnLine(spot, x, y);
+        int endcol = col + (piecesOnLine * x);
+        int endrow = row + (piecesOnLine * y);
+        if (1 <= endcol && endcol <= 8 && 1 <= endrow && endrow <= 8) { 
+            return Move.create(spot, x, y, piecesOnLine);
+        }
+        return null;
+    }
+
+    LinkedList<Move> legalMovesFromSpot(BoardSpot spot) {
+        Move move;
+        LinkedList<Move> result = new LinkedList<Move>();
+        for (int x = -1; x < 2; x += 1) {
+            for (int y = -1; y < 2; y += 1) {
+                move = legalMovefromSpotInDirection(spot, x, y);
+                if (move != null && isLegal(move)) {
+                    result.add(move);
+                }
+            }
+        }
+        return result;
+    }
+
+    /** Return true iff the game is currently over.  A game is over if
+     *  either player has all his pieces continguous. */    boolean gameOver() {
+         return piecesContiguous(BLACK) || piecesContiguous(WHITE);
+     }
+
+     /** Return true iff PLAYER's pieces are continguous. */
+     boolean piecesContiguous(Side player) {
+         boardTraverse += 1;
+         int numberPieces = 0;
+         BoardSpot firstSpot = null;
+         for (BoardSpot[] array: boardspots) {
+             for (BoardSpot spot: array) {
+                 if (spot == null) {
+                     continue;
+                 }
+                 if (spot.getPiece().side() == player) {
+                     numberPieces += 1;
+                     if (firstSpot == null) {
+                         firstSpot = spot;
+                     }
+                 }
+             }
+         }
+         int contigPieces = 0;
+         LinkedList<BoardSpot> stack = new LinkedList<BoardSpot>();
+         stack.push(firstSpot);
+         BoardSpot spot;
+         while (!stack.isEmpty()) {
+             contigPieces += 1;
+             spot = stack.poll();
+             spot.setTraverseNum(boardTraverse);
+             for (BoardSpot contigSpot: spot.getSpotArray()) {
+                 if (contigSpot == null) {
+                     continue;
+                 }
+                 if (contigSpot.getPiece().side() == player
+                         && contigSpot.getTraverseNum() != boardTraverse) {
+                     contigSpot.setTraverseNum(boardTraverse);
+                     stack.push(contigSpot);
+                 }
+             }
+
+         }
+         return (numberPieces == contigPieces);
+     }
+
+
+
+     /** Return the total number of moves that have been made (and not
+      *  retracted).  Each valid call to makeMove with a normal move increases
+      *  this number by 1. */
+     int movesMade() {
+         return getMovesMade().size();
+     }
+
+     /** Returns move #K used to reach the current position, where
+      *  0 <= K < movesMade().  Does not include retracted moves. */
+     Move getMove(int k) {
+         return getMovesMade().get(k);
+     }
+
+     @Override
+     public String toString() {
+         String result = "===\n";
+         for (int i = 1; i < 9; i += 1) {
+             for (int k = 8; k >= 1; k -= 1) {
+                 result = (get(k, i).textName()+ " ").concat(result);
+             }
+             result = ("\n").concat(result);
+         }
+         result = result.concat("Next move: " + side + "\n");
+         result = result.concat("Moves: " + movesMade() + "\n");
+         result = result.concat("===");
+         return result;
+     }
+
+     protected Side getSide() {
+         return side;
+     }
+
+     protected void setSide(Side side) {
+         this.side = side;
+     }
+
+     /** Represents board configuration */
+     private Piece[][] setup = new Piece[8][8];
+
+     public BoardSpot[][] boardspots = new BoardSpot[10][10];
+
+
+     /** Player's side move */
+     private Side side;
+
+     /** Number of moves made */
+     private int numMoves= 0;
+
+
+     /**
+      * @return the numMoves
+      */
+     public int getNumMoves() {
+         return numMoves;
+     }
+
+     /**
+      * @param numMoves the numMoves to set
+      */
+     public void setNumMoves(int numMoves0) {
+         numMoves = numMoves0;
+     }
+     
+     private static LinkedList<Piece> piecetaken = new LinkedList<Piece>();
+     
+     /**
+     * @return the piecetaken
+     */
+    public static LinkedList<Piece> getPiecetaken() {
+        return piecetaken;
+    }
+
+
+    public LinkedList<Move> getMovesMade() {
+        return movesMade;
+    }
+
+
+    public void setMovesMade(LinkedList<Move> movesMade) {
+        this.movesMade = movesMade;
+    }
+
+    private LinkedList<Move> movesMade = new LinkedList<Move>();
+
+     private int boardTraverse = 0;
+
+     /** The standard initial configuration for Lines of Action. */
+     static final Piece[][] INITIAL_PIECES = {
+         { EMP, BP,  BP,  BP,  BP,  BP,  BP,  EMP },
+         { WP,  EMP, EMP, EMP, EMP, EMP, EMP, WP  },
+         { WP,  EMP, EMP, EMP, EMP, EMP, EMP, WP  },
+         { WP,  EMP, EMP, EMP, EMP, EMP, EMP, WP  },
+         { WP,  EMP, EMP, EMP, EMP, EMP, EMP, WP  },
+         { WP,  EMP, EMP, EMP, EMP, EMP, EMP, WP  },
+         { WP,  EMP, EMP, EMP, EMP, EMP, EMP, WP  },
+         { EMP, BP,  BP,  BP,  BP,  BP,  BP,  EMP }
+     };
+
+}

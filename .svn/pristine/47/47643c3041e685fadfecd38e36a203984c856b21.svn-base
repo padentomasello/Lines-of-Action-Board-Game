@@ -1,0 +1,28 @@
+package loa;
+
+import java.awt.Color;
+import java.awt.Graphics;
+
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
+
+public class Output extends JLabel {
+    private Board board;
+
+    Output(Board board0, QueuedMailBox box) {
+        super();
+        board = board0;
+    }
+
+    Output() {
+        super();
+    }
+
+    Output(String string) {
+        super(string);
+    }
+    
+    
+
+}

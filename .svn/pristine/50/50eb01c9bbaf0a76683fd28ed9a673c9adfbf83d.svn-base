@@ -1,0 +1,33 @@
+package loa;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class BoardButtonListener implements ActionListener {
+
+    private QueuedMailBox box;
+    
+    BoardButtonListener(QueuedMailBox box0) {
+        box = box0;
+    }
+    
+    boolean firsttoss = true;
+    int col0, row0;
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (firsttoss) {
+            col0 = ((GuiSpot) e.getSource()).getBoardSpot().get_col();
+            row0 = ((GuiSpot) e.getSource()).getBoardSpot().get_row();
+            firsttoss = false;
+        } else {
+            int col1, row1;
+            col1 = ((GuiSpot) e.getSource()).getBoardSpot().get_col();
+            row1 = ((GuiSpot) e.getSource()).getBoardSpot().get_row();
+            box.deposit(Move.create(col0, row0, col1, row1));
+            firsttoss = true;
+        }
+        
+    }
+    
+}

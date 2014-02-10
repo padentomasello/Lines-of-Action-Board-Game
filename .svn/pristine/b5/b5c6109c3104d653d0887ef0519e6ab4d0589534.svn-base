@@ -1,0 +1,65 @@
+package loa;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class BoardTest {
+
+    @Test
+    public void test() {
+        Board board = new Board();
+        assertEquals("Get Coloumb not functioning correctly", 1, Board.col("a1"));
+        assertEquals("Get Row not functioning correctly", 1, Board.row("a1"));
+        Piece piece = Piece.BP;
+        assertEquals("Get(int, int) not functioning correctly.", Piece.EMP, board.get(1, 1));
+        assertEquals("Get(int, int) not functioning correctly.", Piece.WP, board.get(1, 3));
+        Board.col("a1");
+        Board.row("a1");
+        assertEquals("Get not functioning correctly.", Piece.BP, board.get("b8"));
+        assertEquals("Get not functioning correctly.", Piece.BP, board.get("d1"));
+        assertEquals("Get not functioning correctly.", Piece.WP, board.get("a3"));
+        assertEquals("Get not functioning correctly.", Piece.WP, board.get("h7"));
+        assertEquals("Get not functioning correctly.", Piece.EMP, board.get("d3"));
+        assertEquals("Get not functioning correctly.", Piece.EMP, board.get("c6"));
+        assertEquals("Turn not functioning correctly.", Side.BLACK, board.turn());
+        Move move = Move.create(1, 2, 5, 2);
+        assertEquals("IsColMove not functioning correctly ", true, move.isColMove());
+        assertEquals("IsLegal Move not functioning correctly", false, board.isLegal(move));
+        move = Move.create(1, 2, 3, 2);
+        assertEquals("IsColMove not functioning correctly ", true, move.isColMove());
+        assertEquals("IsLegal Move not functioning correctly", false, board.isLegal(move));
+        assertEquals("Number of piece not functioning correctly", 2, board.piecesColMove(move));
+        move = Move.create(2, 1, 8, 1);
+        assertEquals("IsColMove not functioning correctly ", true, move.isColMove());
+        assertEquals("IsLegal Move not functioning correctly", true, board.isLegal(move));
+        assertEquals("Number of piece not functioning correctly", 6, board.piecesColMove(move));
+        move = Move.create(1, 2, 1, 8);
+        assertEquals("IsRowMove not functioning correctly ", true, move.isRowMove());
+        assertEquals("IsLegal Move not functioning correctly", false, board.isLegal(move));
+        assertEquals("Number of piece not functioning correctly", 6, board.piecesRowMove(move));
+        move = Move.create(1, 8, 1, 2);
+        assertEquals("IsRowMove not functioning correctly ", true, move.isRowMove());
+        assertEquals("IsLegal Move not functioning correctly", false, board.isLegal(move));
+        assertEquals("Number of piece not functioning correctly", 6, board.piecesRowMove(move));
+        move = Move.create(7, 1, 1, 1);
+        assertEquals("IsColMove not functioning correctly ", true, move.isColMove());
+        assertEquals("IsLegal Move not functioning correctly", true, board.isLegal(move));
+        assertEquals("Number of piece not functioning correctly", 6, board.piecesColMove(move));
+        move = Move.create(8, 1, 2, 1);
+        assertEquals("IsLegal Move not functioning correctly", false, board.isLegal(move));
+        move = Move.create(6, 1, 8, 3);
+        assertEquals("IsDiagMove not functioning correctly ", true, move.isDiagnalUp());
+        assertEquals("IsLegal Move not functioning correctly", true, board.isLegal(move));
+        move = Move.create(7, 1, 8, 2);
+        assertEquals("IsDiagMove not functioning correctly ", true, move.isDiagnalUp());
+        assertEquals("IsLegal Move not functioning correctly", false, board.isLegal(move));
+        move = Move.create(3, 8, 1, 6);
+        assertEquals("IsLegal Move not functioning correctly", true, board.isLegal(move));
+        move = Move.create(4, 8, 1, 5);
+        assertEquals("IsLegal Move not functioning correctly", false, board.isLegal(move));
+        move = Move.create(6, 1, 8, 3);
+        assertEquals("IsLegal Move not functioning correctly", true, board.isLegal(move));
+    }
+
+}

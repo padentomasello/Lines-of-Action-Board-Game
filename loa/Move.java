@@ -1,0 +1,137 @@
+package loa;
+
+import java.util.HashMap;
+
+/** A move in Lines of Action.
+ *  @author Daniel Paden Tomasello cs61b-bz. */
+class Move {
+    /** Constant for fourty eight. */
+    private static final int FOURTYEIGHT = 48;
+
+    /* Implementation note: We create moves by means of static "factory
+     * methods" all named create, which in turn use the single (private)
+     * constructor.  Factory methods have certain advantages over constructors:
+     * they allow you to produce results having an arbitrary subtype of Move,
+     * and they don't require that you produce a new object each time.  This
+     * second advantage is useful when you are trying to speed up the creation
+     * of Moves for use in automated searching for moves.  You can (if you
+     * want) create just one instance of the Move representing 1-5, for example
+     * and return it whenever that move is requested. */
+    /** Return a move of the piece at COLUMN0, ROW0 to COLUMN1, ROW1. */
+    static Move create(int column0, int row0, int column1, int row1) {
+        if (!moves.containsKey("" + column0 + row0 + column1 + row1)) {
+            moves.put("" + column0 + row0 + column1 + row1,
+                    new Move(column0, row0, column1, row1));
+        }
+        return moves.get("" + column0 + row0 + column1 + row1);
+    }
+    /** Returns a move from SPOT in diriection X Y with LENGTH length. */
+    static Move create(BoardSpot spot, int x, int y, int length) {
+        return create(spot.getCol(), spot.getRow(),
+               spot.getCol() + x * length, spot.getRow() + y * length);
+    }
+    /** Returns move from string STRING. */
+    static Move create(String string) {
+        int col0 = string.charAt(0) - NINETYSIX;
+        int row0 =  string.charAt(1) - FOURTYEIGHT;
+        int col1 = string.charAt(3) - NINETYSIX;
+        int row1 = string.charAt(4) - FOURTYEIGHT;
+        return Move.create(col0, row0, col1, row1);
+    }
+
+    /** A new Move of the piece at COL0, ROW0 to COL1, ROW1. */
+    private Move(int col0, int row0, int col1, int row1) {
+        _col0 = col0;
+        _row0 = row0;
+        _col1 = col1;
+        _row1 = row1;
+
+    }
+
+    /** Return the column at which this move starts, as an index in 1--8. */
+    int getCol0() {
+        return _col0;
+    }
+
+    /** Return the row at which this move starts, as an index in 1--8. */
+    int getRow0() {
+        return _row0;
+    }
+
+    /** Return the column at which this move ends, as an index in 1--8. */
+    int getCol1() {
+        return _col1;
+    }
+
+    /** Return the row at which this move ends, as an index in 1--8. */
+    int getRow1() {
+        return _row1;
+    }
+
+
+    /** Return the length of this move (number of squares moved). */
+    int length() {
+        return Math.max(Math.abs(_row1 - _row0), Math.abs(_col1 - _col0));
+    }
+
+
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + _col0;
+        result = prime * result + _col1;
+        result = prime * result + _row0;
+        result = prime * result + _row1;
+        return result;
+    }
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Move)) {
+            return false;
+        }
+        Move other = (Move) obj;
+        if (_col0 != other._col0) {
+            return false;
+        }
+        if (_col1 != other._col1) {
+            return false;
+        }
+        if (_row0 != other._row0) {
+            return false;
+        }
+        if (_row1 != other._row1) {
+            return false;
+        }
+        return true;
+    }
+    @Override
+    public String toString() {
+        char col0 = (char) (_col0 + NINETYSIX);
+        char col1 = (char) (_col1 + NINETYSIX);
+        return ("" + col0 + _row0 + "-" + col1 + _row1);
+    }
+
+    /** HashMap to memiorize moves. */
+    private static HashMap<String, Move> moves = new HashMap<String, Move>();
+
+    /** Column and row numbers of starting and ending points. */
+    private int _col0, _row0, _col1, _row1;
+
+    /** Constant for NINETYSIX. */
+    private static final int NINETYSIX = 96;
+}
+

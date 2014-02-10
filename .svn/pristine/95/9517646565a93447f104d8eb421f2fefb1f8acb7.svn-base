@@ -1,0 +1,34 @@
+package loa;
+
+import java.awt.Color;
+import java.awt.Graphics;
+
+import javax.swing.JButton;
+import javax.swing.plaf.basic.BasicButtonListener;
+
+public class NonMoveButton extends JButton {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+
+    NonMoveButton(String string) {
+        super(string);
+        
+        
+    }
+    
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+    }
+    
+    BoardSpot getSpot() {
+        return spot;
+    }
+    BoardSpot getBoardSpot() {
+        return spot;
+    }
+    
+    private BoardSpot spot;
+}

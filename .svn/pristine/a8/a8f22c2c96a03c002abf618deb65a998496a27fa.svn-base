@@ -1,0 +1,206 @@
+package loa;
+
+import java.util.Iterator;
+
+public class BoardSpot {
+
+    BoardSpot(int col, int row) {
+        _row = row;
+        _col = col;
+        traverseNum = 0;
+        spotArray = new BoardSpot[8];
+    }
+    
+    public boolean isLegalSpot() {
+        return true;
+    }
+    
+    /**
+     * @return the _row
+     */
+    public int get_row() {
+        return _row;
+    }
+
+    /**
+     * @return the _col
+     */
+    public int get_col() {
+        return _col;
+    }
+
+    public void addPiece(Piece piece0) {
+        piece = piece0;
+    }
+    
+    private BoardSpot TL, T, TR, R, L, BR, BL, B;
+    
+    private BoardSpot[] spotArray;
+    
+    /**
+     * @return the spotArray
+     */
+    public BoardSpot[] getSpotArray() {
+        return spotArray;
+    }
+
+    /**
+     * @return the TopLeft Boardspot. */
+    public BoardSpot getTL() {
+        return TL;
+    }
+
+    /**
+     * @return the traverseNum
+     */
+    public int getTraverseNum() {
+        return traverseNum;
+    }
+
+    /**
+     * @param traverseNum the traverseNum to set
+     */
+    public void setTraverseNum(int traverseNum0) {
+        traverseNum = traverseNum0;
+    }
+
+    /**
+     * Sets TL to the TL0 */
+    public void setTL(BoardSpot tL0) {
+        TL = tL0;
+        spotArray[0] = tL0;
+    }
+
+    /**
+     * @return the t
+     */
+    public BoardSpot getT() {
+        return T;
+    }
+
+    /**
+     * @param t the t to set
+     */
+    public void setT(BoardSpot t) {
+        T = t;
+        spotArray[1] = T;
+    }
+
+    /**
+     * @return the tR
+     */
+    public BoardSpot getTR() {
+        return TR;
+    }
+
+    /**
+     * @param tR the tR to set
+     */
+    public void setTR(BoardSpot tR) {
+        TR = tR;
+        spotArray[2] = TR;
+    }
+
+    /**
+     * @return the r
+     */
+    public BoardSpot getR() {
+        return R;
+    }
+
+    /**
+     * @param r the r to set
+     */
+    public void setR(BoardSpot r) {
+        R = r;
+        spotArray[3] = R;
+    }
+
+    /**
+     * @return the l
+     */
+    public BoardSpot getL() {
+        return L;
+    }
+
+    /**
+     * @param l the l to set
+     */
+    public void setL(BoardSpot l) {
+        L = l;
+        spotArray[7] = L;
+    }
+
+    /**
+     * @return the bR
+     */
+    public BoardSpot getBR() {
+        return BR;
+    }
+
+    /**
+     * @param bR the bR to set
+     */
+    public void setBR(BoardSpot bR) {
+        BR = bR;
+        spotArray[4] = BR;
+    }
+
+    /**
+     * @return the rL
+     */
+    public BoardSpot getBL() {
+        return BL;
+    }
+
+    /**
+     * @param rL the rL to set
+     */
+    public void setBL(BoardSpot BL0) {
+        BL = BL0;
+        spotArray[6] = BL;
+    }
+
+    /**
+     * @return the b
+     */
+    public BoardSpot getB() {
+        return B;
+    }
+
+    /**
+     * @param b the b to set
+     */
+    public void setB(BoardSpot b) {
+        B = b;
+        spotArray[5] = B;
+    }
+
+    /**
+     * @return the piece
+     */
+    public Piece getPiece() {
+        return piece;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "BoardSpot [_row=" + _row + ", _col=" + _col + "]"+piece;
+    }
+
+    /**
+     * @param piece the piece to set
+     */
+    public void setPiece(Piece piece) {
+        this.piece = piece;
+    }
+    
+    private int traverseNum;
+
+    private Piece piece;
+    
+    private  int _row, _col;
+}

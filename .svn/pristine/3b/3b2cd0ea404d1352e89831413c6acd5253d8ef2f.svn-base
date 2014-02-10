@@ -1,0 +1,37 @@
+package loa;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+/** Listens to BoardButton events.
+ *
+ * @author padentomasello
+ *
+ */
+public class BoardButtonListener implements ActionListener {
+    /** Used for message passing. */
+    private QueuedMailBox box;
+    /** Creates new me with BOX0. */
+    BoardButtonListener(QueuedMailBox box0) {
+        box = box0;
+    }
+    /** Boolean value for if its first spot. */
+    private boolean firsttoss = true;
+    /** Column and row of first toss. */
+    private int col0, row0;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (firsttoss) {
+            col0 = ((GuiSpot) e.getSource()).getBoardSpot().getCol();
+            row0 = ((GuiSpot) e.getSource()).getBoardSpot().getRow();
+            firsttoss = false;
+        } else {
+            int col1, row1;
+            col1 = ((GuiSpot) e.getSource()).getBoardSpot().getCol();
+            row1 = ((GuiSpot) e.getSource()).getBoardSpot().getRow();
+            box.deposit(Move.create(col0, row0, col1, row1));
+            firsttoss = true;
+        }
+    }
+}
+

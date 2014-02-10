@@ -1,0 +1,12 @@
+package loa;
+
+public class EmptyBoardSpot extends BoardSpot{
+
+    public EmptyBoardSpot(int col, int row) {
+        super(col, row);
+    }
+    
+    public boolean isLegalSpot() {
+        return false;
+    }
+}

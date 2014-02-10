@@ -1,0 +1,50 @@
+package loa;
+
+import ucb.util.CommandArgs;
+
+/** Main class of the Lines of Action program.
+ * @author Daniel Paden Tomasello cs61b-bz
+ */
+public class Main {
+
+    /** The main Lines of Action.  ARGS are as described in the
+     *  project 3 handout:
+     *      [ --white ] [ --ai=N ] [ --seed=S ] [ --time=LIM ] \
+     *      [ --debug=D ] [ --display ]
+     * @throws InterruptedException
+     */
+    public static void main(String... args) throws InterruptedException {
+        CommandArgs options =
+                new CommandArgs("--white --ai=([012]){0,1} --"
+                        + "seed=(\\d+){0,1} --time=(\\d+){0,1}"
+                        + " --debug={0,1} --display", args);
+        if (!options.ok()) {
+            usage();
+        }
+        boolean isWhite = false;
+        isWhite = options.containsKey("--white");
+        boolean displayON = options.containsKey("--display");
+        long seedValue = options.getLong("--seed");
+        int timeValue = options.getInt("--time");
+        int debugValue = options.getInt("--debug");
+        int aiValue = options.getInt("--ai");
+        Reporter.setMessageLevel(debugValue);
+        Game game;
+        if (isWhite) {
+            game = new Game(2 - aiValue, Side.WHITE,
+                    seedValue, timeValue, displayON);
+        } else {
+            game = new Game(2 - aiValue, Side.BLACK,
+                    seedValue, timeValue, displayON);
+        }
+        game.play();
+    }
+
+
+
+
+    /** Prints how program works. */
+    static void usage() {
+        System.exit(1);
+    }
+}

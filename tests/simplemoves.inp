@@ -1,0 +1,12 @@
+# Check that some simple moves, entered by hand work.  The AI is never started.
+java loa.Main --time=0.1 
+None
+===#1===
+s
+b1-d3
+s
+a3-d3
+s
+f1-a1
+s
+q

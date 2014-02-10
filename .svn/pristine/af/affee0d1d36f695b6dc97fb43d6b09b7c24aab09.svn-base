@@ -1,0 +1,85 @@
+package loa;
+
+import java.awt.*;
+import javax.swing.*;
+import java.awt.event.*;
+import java.io.InputStream;
+ 
+public class GuiFrame extends JFrame {
+         
+    private InputStream isr;
+    
+    public GuiFrame(MutableBoard board) {
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Container con = this.getContentPane();
+        setSize(900,900);
+        setLocation(0,0);
+        con.setLayout(new GridLayout(8,8));
+        JPanel pane;
+        MoveListener listener = new MoveListener(board);
+        for (int i = 0; i < 8; i += 1) {
+            for (int k = 0; k < 8; k += 1) {
+                pane = new SquarePanel(k + 1, 8 - i, board);
+                pane.setBorder(BorderFactory.createLineBorder(Color.black));
+                pane.addMouseListener(listener);
+                con.add(pane);
+            }
+        }
+   /**     JPanel pane1 = new SquarePanel();
+        JPanel pane2 = new SquarePanel();
+        JPanel pane3 = new SquarePanel();
+        JPanel pane4 = new SquarePanel();
+        JPanel pane5 = new SquarePanel();
+        JPanel pane6 = new SquarePanel();
+        JPanel pane7 = new WhiteSquarePanel();
+        JPanel pane8 = new BlackSquarePanel();
+        JPanel pane9 = new WhiteSquarePanel();
+        JPanel pane10 = new BlackSquarePanel();
+        JPanel pane11 = new WhiteSquarePanel();
+        JPanel pane12 = new BlackSquarePanel();
+        JPanel pane13 = new WhiteSquarePanel();
+        JPanel pane14 = new BlackSquarePanel();
+        JPanel pane15 = new WhiteSquarePanel();
+        JPanel pane16 = new BlackSquarePanel();
+        MouseListener listener = new MoveListener();
+        ((SquarePanel)pane1).setContent("Hellow World!");
+        pane1.addMouseListener(listener);
+        pane2.addMouseListener(listener);
+        pane3.addMouseListener(listener);
+        pane4.addMouseListener(listener);
+        pane5.addMouseListener(listener);
+        pane6.addMouseListener(listener);
+        pane7.addMouseListener(listener);
+        pane8.addMouseListener(listener);
+        pane9.addMouseListener(listener);
+        pane10.addMouseListener(listener);
+        pane11.addMouseListener(listener);
+        pane12.addMouseListener(listener);
+        pane13.addMouseListener(listener);
+        pane14.addMouseListener(listener);
+        pane15.addMouseListener(listener);
+        pane16.addMouseListener(listener);
+         
+        con.add(pane1);
+        con.add(pane2);
+        con.add(pane3);
+        con.add(pane4);
+        con.add(pane6);
+        con.add(pane5);
+        con.add(pane8);
+        con.add(pane7);
+        con.add(pane9);
+        con.add(pane10);
+        con.add(pane11);
+        con.add(pane12);
+        con.add(pane14);
+        con.add(pane13);
+        con.add(pane16);
+        con.add(pane15); */
+ 
+        setVisible(true);
+         
+    }
+     
+ 
+}

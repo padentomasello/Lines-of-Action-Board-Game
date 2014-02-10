@@ -1,0 +1,65 @@
+package loa;
+
+import ucb.util.CommandArgs;
+
+/** Main class of the Lines of Action program.
+ * @author Daniel Paden Tomasello cs61b-bz
+ */
+public class Main {
+
+    /** The main Lines of Action.  ARGS are as described in the
+     *  project 3 handout:
+     *      [ --white ] [ --ai=N ] [ --seed=S ] [ --time=LIM ] \
+     *      [ --debug=D ] [ --display ]
+     * @throws InterruptedException
+     */
+    public static void main(String... args) throws InterruptedException {
+        CommandArgs options =
+                new CommandArgs("--white{0,1} --ai=([012]){0,1} --"
+                        + "seed=(\\d+){0,1} --time=([0-9]*\\.?[0-9]){0,1}"
+                        + " --debug={0,1} --display", args);
+        if (!options.ok()) {
+            usage();
+        }
+        boolean isWhite = false;
+        long seedValue = 0;
+        double timeValue = 0;
+        int debugValue = 0;
+        int aiValue = 0;
+        isWhite = options.containsKey("--white");
+        boolean displayON = options.containsKey("--display");
+        if (options.optionKeys().contains("--seed")) {
+            seedValue = options.getLong("--seed");
+        }
+        if (options.optionKeys().contains("--time")) {
+            timeValue = options.getDouble("--time");
+        }
+        if (options.optionKeys().contains("--debug")) {
+            debugValue = options.getInt("--debug");
+        }
+        if (options.optionKeys().contains("--ai")) {
+            aiValue = options.getInt("--ai");
+        }
+        Reporter.setMessageLevel(debugValue);
+        Game game;
+        if (isWhite) {
+            game = new Game(2 - aiValue, Side.WHITE,
+                    seedValue, timeValue, displayON);
+        } else {
+            game = new Game(2 - aiValue, Side.BLACK,
+                    seedValue, timeValue, displayON);
+        }
+        game.play();
+    }
+
+
+
+
+    /** Prints how program works. */
+    static void usage() {
+        System.err.println("Please refer to"
+                + "https://inst.eecs.berkeley.edu/~cs61b/fa12/labs/proj3.pdf"
+                + "for usage");
+        System.exit(1);
+    }
+}

@@ -1,0 +1,24 @@
+package loa;
+
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+
+public class BoardTest {
+
+    @Test
+    public void test() {
+        Board board = new Board();
+        assertEquals("Get Coloumb not functioning correctly", 0, Board.col("a1"));
+        assertEquals("Get Row not functioning correctly", 0, Board.row("a1"));
+        Piece piece = Piece.BP;
+        assertEquals("Get not functioning correctly.", Piece.BP, board.get("b8"));
+        assertEquals("Get not functioning correctly.", Piece.BP, board.get("d1"));
+        assertEquals("Get not functioning correctly.", Piece.WP, board.get("a3"));
+        assertEquals("Get not functioning correctly.", Piece.WP, board.get("h7"));
+        assertEquals("Get not functioning correctly.", Piece.EMP, board.get("d3"));
+        assertEquals("Get not functioning correctly.", Piece.EMP, board.get("c6"));
+        assertEquals("Turn not functioning correctly.", Side.BLACK, board.turn());
+    }
+
+}

@@ -1,0 +1,24 @@
+package loa;
+
+import java.util.LinkedList;
+import java.util.List;
+
+
+public class QueuedMailBox {
+    
+    private List<Move> queue = new LinkedList<Move>();
+    
+    public synchronized void deposit(Move move0) {
+        queue.add(move0);
+        this.notifyAll();
+    }
+    
+    public synchronized Move receive() throws InterruptedException {
+        while (queue.isEmpty()) {
+            wait();
+        }
+        Move temp = queue.remove(0);
+        return temp;
+    }
+
+}

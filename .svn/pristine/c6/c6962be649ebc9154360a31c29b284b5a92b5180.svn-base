@@ -1,0 +1,42 @@
+package loa;
+
+import java.awt.Color;
+import java.awt.Graphics;
+
+import javax.swing.JButton;
+import javax.swing.plaf.basic.BasicButtonListener;
+
+public class GuiSpot extends JButton {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+
+    GuiSpot(Board board, int c, int r) {
+        super("");
+        spot = board.getSpot(c, 9 - r);
+        
+    }
+    
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.setColor(Color.BLACK);
+        if (getSpot().getPiece() != Piece.EMP) {
+            if (getSpot().getPiece() == Piece.BP) {
+                g.fillOval(8, 8, 30, 30);
+            } else {
+                g.drawOval(8, 8, 30, 30);
+            }
+        }
+    }
+    
+    BoardSpot getSpot() {
+        return spot;
+    }
+    BoardSpot getBoardSpot() {
+        return spot;
+    }
+    
+    private BoardSpot spot;
+}

@@ -1,0 +1,60 @@
+package loa;
+
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
+/** Listens to BoardButton events.
+ *
+ * @author padentomasello
+ *
+ */
+public class BoardButtonListener implements ActionListener {
+    /** Used for message passing. */
+    private QueuedMailBox box;
+    /** Creates new me with BOX0. */
+    BoardButtonListener(QueuedMailBox box0) {
+        box = box0;
+    }
+    /** Boolean value for if its first spot. */
+    private boolean firsttoss = true;
+    /** Column and row of first toss. */
+    private int col0, row0;
+    /** Firstspot clicked. */
+    private GuiSpot spot;
+    /** Contains firstspot orginal border. */
+    private Border regborder;
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() instanceof GuiSpot) {
+            if (firsttoss) {
+                spot = ((GuiSpot) e.getSource());
+                col0 = ((GuiSpot) e.getSource()).getBoardSpot().getCol();
+                row0 = ((GuiSpot) e.getSource()).getBoardSpot().getRow();
+                regborder = spot.getBorder();
+                spot.setBackground(Color.red);
+                firsttoss = false;
+                spot.revalidate();
+                spot.repaint();
+            } else {
+                int col1, row1;
+                col1 = ((GuiSpot) e.getSource()).getBoardSpot().getCol();
+                row1 = ((GuiSpot) e.getSource()).getBoardSpot().getRow();
+                spot.setBorder(regborder);
+                box.deposit(Move.create(col0, row0, col1, row1));
+                firsttoss = true;
+            }
+        } else {
+            NonMoveButton but = ((NonMoveButton) e.getSource());
+            if (but.getText() == "q") {
+                System.exit(0);
+            } else {
+                MachinePlayer.startAi();
+            }
+        }
+    }
+}
+

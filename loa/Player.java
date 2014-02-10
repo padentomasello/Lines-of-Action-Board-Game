@@ -1,0 +1,42 @@
+
+package loa;
+
+import static loa.Side.*;
+
+/** Represents a player.  Extensions of this class do the actual playing.
+ *  @author Daniel Paden Tomasello
+ */
+public abstract class Player {
+
+    /** A player that plays the SIDE pieces in GAME. */
+    Player(Side side, Game game) {
+        _side = side;
+        _game = game;
+    }
+
+    /** Return my next move from the current position in getBoard(), assuming
+     *  that side() == getBoard.turn().
+     * @throws InterruptedException */
+    abstract Move makeMove() throws InterruptedException;
+
+    /** Return which side I'm playing. */
+    Side side() {
+        return _side;
+    }
+
+    /** Return the board I am using. */
+    Board getBoard() {
+        return _game.getBoard();
+    }
+
+    /** Return the game I am playing. */
+    Game getGame() {
+        return _game;
+    }
+
+    /** This player's side. */
+    private final Side _side;
+    /** The game this player is part of. */
+    private Game _game;
+
+}

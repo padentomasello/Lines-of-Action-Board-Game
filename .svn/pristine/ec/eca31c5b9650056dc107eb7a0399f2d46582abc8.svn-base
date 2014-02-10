@@ -1,0 +1,52 @@
+package loa;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+ 
+public class GuiMouseListener implements MouseListener {
+    private int first_click;
+    private SquarePanel first_source;
+     
+    public GuiMouseListener() {
+        first_click = 0;
+    }
+     
+     
+    /* Empty method definition. */
+    public void mousePressed(MouseEvent e) {
+    }
+ 
+    /* Empty method definition. */
+    public void mouseReleased(MouseEvent e) {
+    }
+ 
+    /* Empty method definition. */
+    public void mouseEntered(MouseEvent e) {
+    }
+ 
+    /* Empty method definition. */
+    public void mouseExited(MouseEvent e) {
+    }
+ 
+    public void mouseClicked(MouseEvent e) {
+        SquarePanel p = (SquarePanel)e.getSource();
+        BoardSpot content = null;
+         
+        if(first_click == 0) {
+            first_source = p;
+            ++first_click;
+        }
+        else {
+            first_click = 0;
+            content = first_source.getContent();
+            first_source.repaint();
+            p.repaint();
+            p.getGraphics().drawString(content.getPiece().toString(),p.getWidth()/2,p.getHeight());
+        }
+         
+        System.out.println(content);
+        System.out.println(first_click);
+    }
+ 
+}

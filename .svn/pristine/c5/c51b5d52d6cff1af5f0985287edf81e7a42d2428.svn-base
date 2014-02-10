@@ -1,0 +1,63 @@
+package loa;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.Charset;
+
+import javax.swing.*;
+ 
+public class MoveListener implements MouseListener {
+    
+    private int first_click;
+    private SquarePanel first_source;
+    private MutableBoard board;
+     
+    public MoveListener(MutableBoard board0) {
+        first_click = 0;
+        board = board0;
+    }
+     
+     
+    /* Empty method definition. */
+    public void mousePressed(MouseEvent e) {
+    }
+ 
+    /* Empty method definition. */
+    public void mouseReleased(MouseEvent e) {
+    }
+ 
+    /* Empty method definition. */
+    public void mouseEntered(MouseEvent e) {
+    }
+ 
+    /* Empty method definition. */
+    public void mouseExited(MouseEvent e) {
+    }
+ 
+    public void mouseClicked(MouseEvent e) {
+        SquarePanel p = (SquarePanel)e.getSource();
+        BoardSpot firstSpot = null;
+        if(first_click != 0) {
+            first_click = 0;
+            firstSpot = first_source.getContent();
+            int col0 = firstSpot.get_col();
+            int row0 = firstSpot.get_row();
+            BoardSpot secSpot = p.getContent();
+            int col1 = secSpot.get_col();
+            int row1 = secSpot.get_row();
+            first_source.repaint();
+            Move move = Move.create(col0, row0, col1, row1);
+            if (board.isLegal(move)) {
+                board.makeMove(move);
+            }
+            p.repaint();
+            first_source.repaint();
+        } else {
+            first_click += 1;
+            first_source = (SquarePanel)e.getSource();
+        }
+    }
+ 
+}
+ 

@@ -1,0 +1,74 @@
+// Remove all comments that begin with //, and replace appropriately.
+// Feel free to modify ANYTHING in this file.
+
+package loa;
+
+import java.util.Random;
+
+/** Represents one game of Lines of Action.
+ *  @author */
+class Game {
+
+    /** A new Game between NUMHUMAN humans and 2-NUMHUMAN AIs.  SIDE0
+     *  indicates which side the first player (known as ``you'') is
+     *  playing.  SEED is a random seed for random-number generation.
+     *  TIME is the time limit each side has to make its moves (in seconds).
+     */
+    Game(int _numHuman, Side _side0, long _seed, int _time) {
+        _randomSource = new Random(seed);
+        numHuman = _numHuman;
+        side = _side0;
+        seed = _seed;
+        time = _time;
+    }
+
+    /** Return the current board. */
+    Board getBoard() {
+        return _board;
+    }
+
+    /** Return a move from the terminal.  Processes any intervening commands
+     *  as well. */
+    String getMove() {
+        return "";  // REPLACE WITH IMPLEMENTATION
+    }
+
+    /** Play this game, printing any transcript and other results. */
+    public void play() {
+        if (Reporter.getMessageLevel() != 0) {
+            System.out.println("Number of Humans: " + numHuman);
+            System.out.println("Side of first player: " + side);
+            System.out.println("Random Seed: " + seed);
+            System.out.println("Maximun time limit: " + time);
+            
+        }
+    }
+
+    /** Return time remaining for SIDE (in seconds). */
+    int timeRemaining(Side side) {
+        return 0; // REPLACE WITH IMPLEMENTATION
+    }
+
+    /** Return the random number generator for this game. */
+    Random getRandomSource() {
+        return _randomSource;
+    }
+
+    /** The official game board. */
+    private MutableBoard _board;
+
+    /** A source of random numbers, primed to deliver the same sequence in
+     *  any Game with the same seed value. */
+    private Random _randomSource;
+
+    // OTHER STUFF HERE
+    
+    /** numHuman is number of human players. Time is time limit */
+    private int numHuman, time;
+    /** Random generator seed */
+    private long seed;
+    /** Side of first player */
+    private Side side;
+    
+
+}

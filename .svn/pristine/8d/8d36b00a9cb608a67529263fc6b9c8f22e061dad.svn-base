@@ -1,0 +1,54 @@
+package loa;
+
+import java.awt.*;
+import java.io.InputStreamReader;
+
+import javax.swing.*;
+ 
+
+
+public class SquarePanel extends JPanel {
+    BoardSpot content;
+    
+    InputStreamReader isr;
+    
+    int c, r;
+    
+    Board board;
+    
+    Color color;
+     
+    public SquarePanel(int c0, int r0, Board board0) {
+        content = null;
+        c = c0;
+        r= r0;
+        board = board0;
+    }
+     
+    public void paintComponent(Graphics g) {
+        int width = getWidth();
+        int height = getHeight();
+        g.setColor(Color.white);
+        g.fillRect(0, 0, 112, 200);
+        if (getContent().getPiece() != Piece.EMP) {
+        g.setColor(color());
+        g.fillOval(20,15, 70, 70);
+        g.setColor(Color.black);
+        g.drawOval(20, 15, 70, 70);
+        }
+    }
+    
+ 
+    public BoardSpot getContent() {
+        return board.getSpot(c, r);
+    }
+    
+    public Color color() {
+        if (getContent().getPiece() == Piece.WP) {
+            return Color.white;
+        } else if (getContent().getPiece() == Piece.BP) {
+            return Color.black;
+        }
+        return null;
+    }
+}

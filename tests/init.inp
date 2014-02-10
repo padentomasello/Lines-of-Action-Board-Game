@@ -1,0 +1,6 @@
+# Check that the initial position is right.
+java loa.Main --time=1
+None
+===#1===
+s
+q

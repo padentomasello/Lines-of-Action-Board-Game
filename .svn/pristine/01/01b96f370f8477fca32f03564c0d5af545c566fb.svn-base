@@ -1,0 +1,182 @@
+package loa;
+
+
+import static org.junit.Assert.*;
+import static loa.Piece.*;
+import static loa.Side.*;
+
+import java.awt.Component;
+import java.util.LinkedList;
+
+import javax.swing.JPanel;
+
+import org.junit.Test;
+
+public class BoardTest {
+
+    @Test
+    public void test() throws InterruptedException {
+        QueuedMailBox box = new QueuedMailBox();
+        MutableBoard board = new MutableBoard();
+        GuiBoard gui = new GuiBoard(board, box);
+        GuiCommand commGui = new GuiCommand(board, box);
+        Move move0 = box.receive();
+        board.makeMove(move0);
+        gui.validate();
+        commGui.getLabel().setText("Turn: " + board.turn().toString());
+        commGui.validate();
+        assertEquals("Get Coloumb not functioning correctly",
+                1, Board.col("a1"));
+        assertEquals("Get Row not functioning correctly",
+                1, Board.row("a1"));
+        assertEquals("Get(int, int) not functioning correctly.",
+                Piece.EMP, board.get(1, 1));
+        assertEquals("Get(int, int) not functioning correctly.",
+                Piece.WP, board.get(1, 3));
+        Board.col("a1");
+        Board.row("a1");
+        assertEquals("Get not functioning correctly.",
+                Piece.BP, board.get("b8"));
+        assertEquals("Get not functioning correctly.",
+                Piece.BP, board.get("d1"));
+        assertEquals("Get not functioning correctly.",
+                Piece.WP, board.get("a3"));
+        assertEquals("Get not functioning correctly.",
+                Piece.WP, board.get("h7"));
+        assertEquals("Get not functioning correctly.",
+                Piece.EMP, board.get("d3"));
+        assertEquals("Get not functioning correctly.",
+                Piece.EMP, board.get("c6"));
+        assertEquals("Turn not functioning correctly.",
+                Side.BLACK, board.turn());
+        Move move = Move.create(1, 2, 5, 2);
+        assertEquals("IsLegal Move not functioning correctly",
+                false, board.isLegal(move));
+        move = Move.create(1, 2, 3, 2);
+        assertEquals("IsLegal Move not functioning correctly",
+                false, board.isLegal(move));
+        move = Move.create(2, 1, 8, 1);
+        assertEquals("IsLegal Move not functioning correctly",
+                true, board.isLegal(move));
+        move = Move.create(1, 2, 1, 8);
+        assertEquals("IsLegal Move not functioning correctly",
+                false, board.isLegal(move));
+        move = Move.create(1, 8, 1, 2);
+        assertEquals("IsLegal Move not functioning correctly",
+                false, board.isLegal(move));
+        move = Move.create(7, 1, 1, 1);
+        assertEquals("IsLegal Move not functioning correctly",
+                true, board.isLegal(move));
+        move = Move.create(8, 1, 2, 1);
+        assertEquals("IsLegal Move not functioning correctly",
+                false, board.isLegal(move));
+        move = Move.create(6, 1, 8, 3);
+        assertEquals("IsLegal Move not functioning correctly",
+                true, board.isLegal(move));
+        move = Move.create(7, 1, 8, 2);
+        assertEquals("IsLegal Move not functioning correctly",
+                false, board.isLegal(move));
+        move = Move.create(3, 8, 1, 6);
+        assertEquals("IsLegal Move not functioning correctly",
+                true, board.isLegal(move));
+    }
+    @Test
+    public void testContigous() {
+        Piece[][] pieces = {
+            { EMP, EMP,  EMP,  EMP,  EMP,  EMP,  EMP,  EMP },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, WP  },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, WP  },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, WP  },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, WP  },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, WP  },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, WP  },
+            { EMP, BP,  BP,  BP,  BP,  BP,  BP,  EMP }
+        };
+        Board board = new Board(pieces, BLACK);
+        assertEquals("IsContigouos not worrking properly", true,
+                board.gameOver());
+        assertEquals("IsContigouos not worrking properly", true,
+                board.piecesContiguous(WHITE));
+        assertEquals("IsContigouos not worrking properly", true,
+                board.piecesContiguous(BLACK));
+        Piece[][] pieces2 = {
+            { EMP, EMP,  EMP,  EMP,  EMP,  EMP,  EMP,  EMP },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, EMP  },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, EMP  },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, EMP  },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, EMP  },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, EMP  },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, WP  },
+            { EMP, BP,  BP,  BP,  BP,  BP,  BP,  EMP }
+        };
+        Board board2 = new Board(pieces2, WHITE);
+        assertEquals("IsContigouos not worrking properly",
+                true, board2.gameOver());
+        assertEquals("IsContigouos not worrking properly",
+                true, board2.piecesContiguous(WHITE));
+        assertEquals("IsContigouos not worrking properly",
+                true, board2.piecesContiguous(BLACK));
+        Piece[][] pieces3 = {
+            { EMP, EMP,  EMP,  EMP,  EMP,  EMP,  EMP,  EMP },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, EMP  },
+            { EMP,  WP, EMP, EMP, EMP, EMP, EMP, EMP  },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, EMP  },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, EMP  },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, EMP  },
+            { EMP,  EMP, EMP, EMP, EMP, EMP, EMP, WP  },
+            { EMP, BP,  BP,  BP,  BP,  BP,  BP,  EMP }
+        };
+        Board board3 = new Board(pieces3, WHITE);
+        assertEquals("IsContigouos not worrking properly", true,
+                board3.gameOver());
+        assertEquals("IsContigouos not worrking properly", false,
+                board3.piecesContiguous(WHITE));
+        assertEquals("IsContigouos not worrking properly", true,
+                board3.piecesContiguous(BLACK));
+    }
+    @Test
+    public void testMoveMethods() {
+
+        Board board = new Board();
+        assertEquals("piecesOnLine not fucntion for spots", 2,
+                board.piecesOnLine(board.getSpot(2, 1), 0, 1));
+        assertEquals("piecesOnLine not fucntion for spots", 2,
+                board.piecesOnLine(board.getSpot(2, 1), -1, -1));
+        assertEquals("piecesOnLine not fucntion for spots", 6,
+                board.piecesOnLine(board.getSpot(2, 1), -1, 0));
+        assertEquals("piecesOnLine not fucntion for spots", 2,
+                board.piecesOnLine(board.getSpot(2, 1), -1, -1));
+        assertEquals("piecesOnLine not fucntion for spots", 2,
+                board.piecesOnLine(board.getSpot(2, 1), 1, 1));
+        LinkedList<Move> legalMovesFromSpot =
+                board.legalMovesFromSpot(board.getSpot(2, 1));
+        assertEquals("LegalMoves from faulty", 3,
+                legalMovesFromSpot.size());
+        legalMovesFromSpot = board.legalMovesFromSpot(board.getSpot(4, 1));
+        assertEquals("LegalMoves from faulty", 3,
+                legalMovesFromSpot.size());
+        legalMovesFromSpot = board.legalMovesFromSpot(board.getSpot(4, 2));
+        assertEquals("LegalMoves from faulty", true,
+                legalMovesFromSpot.isEmpty());
+    }
+
+    @Test
+    public void testRetract() {
+        MutableBoard board = new MutableBoard();
+        assertEquals("Board get not working properly", BP,
+                board.get(2, 1));
+        Move move = Move.create(2, 1, 4, 3);
+        board.makeMove(move);
+        assertEquals("Board get not working properly", EMP,
+                board.get(2, 1));
+        assertEquals("Board get not working properly", BP,
+                board.get(4, 3));
+        board.retract();
+        assertEquals("Board get not working properly", BP,
+                board.get(2, 1));
+        assertEquals("Board get not working properly", EMP,
+                board.get(4, 3));
+    }
+
+
+}

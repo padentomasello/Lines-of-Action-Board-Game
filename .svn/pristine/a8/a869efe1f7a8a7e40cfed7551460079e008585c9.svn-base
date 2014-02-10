@@ -1,0 +1,122 @@
+package loa;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Scanner;
+import java.util.regex.MatchResult;
+
+/** An automated Player.
+ *  @author */
+class MachinePlayer extends Player {
+
+    /** A MachinePlayer that plays the SIDE pieces in GAME. */
+    MachinePlayer(Side side, Game game) {
+        super(side, game);
+        // FILL IN
+    }
+
+    @Override
+    Move makeMove() {
+        if (aiStarted) {
+            return aiMakeMove(getGame().getBoard());
+        }
+        Scanner inp = new Scanner(System.in);
+        String comm;
+        int col0, col1, row0, row1;
+        while (true) {
+            System.out.print("Player "+side()+" please make a move >  ");
+            while (!inp.hasNext()) {
+                continue;
+            }
+            inp.findWithinHorizon("\\s*([ps#])?([a-h][1-8]-[a-h][1-8])?", 0);
+            MatchResult match = inp.match();
+            String first = match.group(1);
+            if (first != null) {
+                if (match.group(1).equals("s")) {
+                    System.out.println(getGame().getBoard().toString());
+                } else if (match.group(1).equals("p")) {
+                    aiStarted = true;
+                    return aiMakeMove(getGame().getBoard());
+                }
+                inp.nextLine();
+                continue;
+            } else if (match.group(2) != null) {
+                comm = match.group(2);
+                col0 = Board.col(comm.substring(0,2));
+                row0 = Board.row(comm.substring(0,2));
+                col1 = Board.col(comm.substring(3,5));
+                row1 = Board.row(comm.substring(3,5));
+                Move move = Move.create(col0, row0, col1, row1);
+                if (getGame().getBoard().isLegal(move)) {
+                    return move;
+                } else {
+                    System.out.println("Illegal Move");
+                    continue;
+                }
+            } else {
+                System.out.println("Incorrect input, please try again.");
+            }
+            inp.nextLine();
+        }
+    }
+
+    Move aiMakeMove(MutableBoard board) {
+        Iterator<Move> iter = board.legalMoves();
+        ArrayList<MoveTree> moves = new ArrayList<MoveTree>();;
+        while (iter.hasNext()) {
+            moves.add(new MoveTree(iter.next()));
+        }
+        for (int k = 0; k < 3; k += 1) {
+            for (int i = 0; i < moves.size(); i += 1) {
+                if (moves.get(i).root() == Move.create(3,1, 2, 1)) {
+                    System.out.print(""+i+k);
+                }
+                if (forcedWin(moves.get(i), k, board)) {
+                    return moves.get(i).root();
+                }
+            }
+        }
+        return null;
+    }
+
+    Boolean visitNode(MoveTree tree, MutableBoard board) {
+        board.makeMove(tree.root());
+        if (board.piecesContiguous(side())) {
+            board.retract();
+            return true;
+        } else if (!board.piecesContiguous(side().opponent())) {
+            Iterator<Move> iter = board.legalMoves();
+            while (iter.hasNext()) {
+                tree.add(iter.next());
+            }
+        }
+        board.retract();
+        return false;
+    }
+
+    Boolean forcedWin(MoveTree tree, int level, MutableBoard board) {
+        boolean forcedwin = true;
+        if (level == 0) {
+            return visitNode(tree, board);
+        } else {
+            if (tree.root() == Move.create(3,4,6,7)) {
+                System.out.println("test");
+            }
+            board.makeMove(tree.root());
+            for (MoveTree child: tree.getChildren()) {
+                forcedwin = forcedwin & forcedWin(child, level - 1, board);
+            }
+            if (tree.getChildren().isEmpty()) {
+                board.retract();
+                return false;
+            }
+            board.retract();
+        }
+        return forcedwin;
+    }
+
+    private boolean aiStarted = false;
+
+    private MoveTree movetree;
+}

@@ -1,0 +1,12 @@
+# Run your AI against the staff program.
+java loa.Main --white --seed=129384 --time=0.25 
+staff-loa --strict --seed=384293 --time=0.25
+===#1===
+p
+%mb
+%iw...
+%e
+===#2===
+p
+%ib...
+%e

@@ -1,0 +1,61 @@
+package loa;
+
+import java.util.LinkedList;
+
+public class MoveTree {
+
+    MoveTree(Move move) {
+        _root = move;
+    }
+    
+    MoveTree(Move move, MoveTree parent) {
+        _root = move;
+        _parent = parent;
+    }
+    
+    
+    public Move root() {
+        return _root;
+    }
+    
+    public void add(Move move) {
+        
+        children.push(new MoveTree(move, this));
+    }
+    
+    /**
+     * @param _parent the _parent to set
+     */
+    public void set_parent(MoveTree _parent) {
+        this._parent = _parent;
+    }
+
+    /**
+     * @return the children
+     */
+    public LinkedList<MoveTree> getChildren() {
+        return children;
+    }
+
+    /**
+     * @return the _parent
+     */
+    public MoveTree get_parent() {
+        return _parent;
+    }
+
+    public MoveTree MoveTreeofMove(Move move) {
+        for (MoveTree tree: children) {
+            if (tree.root().equals(move)) {
+                return tree;
+            }
+        }
+        return null;
+    }
+    
+    private LinkedList<MoveTree> children = new LinkedList<MoveTree>();
+    
+    private Move _root;
+    
+    private MoveTree _parent;
+}
